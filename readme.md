@@ -42,5 +42,5 @@ mode = [РЕЖИМ ИГРЫ] - UNLIMITED(без ограничений),TIME_LIM
 attempts = [КОЛ-ВО ПОПЫТОК] - для режима ATTEMPT_LIMITED(ограничения по попыткам).
 time = [ВРЕМЯ(в секундах)] - для режима TIME_LIMITED(ограничения по времени).
 ```
-## Демонстрация работы:
+## Демонстрация игры:
 ![Пример работы приложения](https://github.com/MaximSavelev/BullsAndCows/blob/master/demostration.gif "Demonstration")
