@@ -1,0 +1,20 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
+    <title>Game</title>
+</head>
+<body>
+<div class="input">
+    <p th:text="${wrapper?.answer}"></p>
+    <form method="POST">
+        <div th:if="${wrapper != null}" th:object="${wrapper}">
+            <input type="text" maxlength="4" pattern="[0-9]{4}" required title="Введите ответ, состоящий из 4 чисел"
+                   th:field="*{guest}" class="input" placeholder="answer">
+        </div>
+        <button class="button" type="submit">Ответить</button>
+    </form>
+</div>
+</body>
+</html>

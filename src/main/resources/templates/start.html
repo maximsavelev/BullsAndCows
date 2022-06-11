@@ -1,0 +1,18 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
+    <title>Start</title>
+</head>
+<body>
+<form method="POST" class="form-signin" th:action="@{/start}">
+    <p>Hello, everyone!</p>
+    <div th:object="${player}">
+        <input type="text" th:field="*{username}" th:value="*{username}" required placeholder="Enter your name">
+    </div>
+    <br/>
+    <button class="button" type="submit">Start game</button>
+</form>
+</body>
+</html>

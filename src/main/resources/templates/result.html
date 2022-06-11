@@ -1,0 +1,22 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
+    <title>Result</title>
+</head>
+<body>
+
+<!--/*@thymesVar id="message" type="java.lang.String"*/-->
+<h1 th:text="${message}"></h1>
+<a th:href="@{/start}">Сыграть еще раз?</a>
+<!--/*@thymesVar id="games" type="java.lang.Boolean"*/-->
+<div th:if="${count}">
+    <p th:text="'Your statics:'"></p>
+    <p th:text="'Total games :'+${games.size()}"></p>
+    <div th:each="game, iStat : ${games}">
+        <p th:text="${iStat.count} +')'+  ${game?.getCalculatedTime}  + ' attempts: '+${game.records.size()} + ' status:'+${game.gameStatus}" </p>
+    </div>
+</div>
+</body>
+</html>
