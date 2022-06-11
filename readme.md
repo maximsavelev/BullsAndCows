@@ -42,4 +42,4 @@ attempts = [КОЛ-ВО ПОПЫТОК] - для режима ATTEMPT_LIMITED(о
 time = [ВРЕМЯ(в секундах)] - для режима TIME_LIMITED(ограничения по времени).
 ```
 ## Демонстрация работы:
-![Пример работы приложения](https://github.com/MaximSavelev/BullsAndCows/blob/master/demonstation.gif "Demonstration")
+![Пример работы приложения](https://github.com/MaximSavelev/BullsAndCows/blob/master/demostration.gif "Demonstration")
