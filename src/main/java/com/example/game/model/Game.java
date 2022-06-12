@@ -54,6 +54,7 @@ public class Game {
         this.player = player;
         this.guessedWord = getSequence();
         this.gameStatus = GameStatus.UNFINISHED;
+        this.startTime = LocalDateTime.now();
 
         switch (mode) {
             case ATTEMPT_LIMITED: {
@@ -71,7 +72,7 @@ public class Game {
                 this.attemptCount = Integer.MAX_VALUE;
                 break;
         }
-        startTime = LocalDateTime.now();
+
     }
 
 
