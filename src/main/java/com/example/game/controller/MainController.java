@@ -1,5 +1,6 @@
 package com.example.game.controller;
 
+import com.example.game.constants.GameMessage;
 import com.example.game.exception.AttemptsEndedException;
 import com.example.game.exception.EntityNotFound;
 import com.example.game.exception.TImeOutException;
@@ -33,8 +34,6 @@ public class MainController {
     private final PlayerService playerService;
 
 
-    private final String GAME_SETTINGS_PROPERTIES = "game-settings.properties";
-    private final String MESSAGE_PROPERTIES = "message.properties";
 
 
     @GetMapping("/start")
@@ -53,7 +52,7 @@ public class MainController {
         } else {
             playerService.savePlayer(player);
         }
-        Game game = gameService.createGameFromPropertiesFile(GAME_SETTINGS_PROPERTIES, player);
+        Game game = gameService.createGameFromPropertiesFile(player);
         gameService.saveGame(game);
         redirectAttributes.addFlashAttribute("wrapper", new Wrapper());
         return "redirect:/game/" + game.getId();
@@ -70,7 +69,6 @@ public class MainController {
     @PostMapping("/game/{id}")
     public String game(@ModelAttribute("wrapper") Wrapper wrapper, Model model,
                        RedirectAttributes redirectAttributes, @PathVariable Long id) throws Exception {
-        Properties props = PropertiesLoaderUtils.loadAllProperties(MESSAGE_PROPERTIES);
         Game game = gameService.findGameById(id);
         String guess;
         try {
@@ -78,7 +76,7 @@ public class MainController {
             wrapper.setAnswer(guess);
             recordService.saveRecord(new Record(game, LocalDateTime.now(), wrapper.getGuest()));
             if (game.getGameStatus().equals(GameStatus.WON)) {
-                redirectAttributes.addFlashAttribute("message", props.getProperty("win_message"));
+                redirectAttributes.addFlashAttribute("message", GameMessage.WIN_MESSAGE);
                 redirectAttributes.addFlashAttribute("game", game);
                 return "redirect:/result/" + id;
             }
@@ -86,21 +84,19 @@ public class MainController {
             return "game";
 
         } catch (TImeOutException e) {
-            redirectAttributes.addFlashAttribute("message", props.getProperty("no_time_message"));
+            redirectAttributes.addFlashAttribute("message", GameMessage.NO_TIME_MESSAGE);
             redirectAttributes.addFlashAttribute("game", game);
             recordService.saveRecord(new Record(game, LocalDateTime.now(), "error"));
             return "redirect:/result/" + id;
 
         } catch (AttemptsEndedException e) {
-            redirectAttributes.addFlashAttribute("message", props.getProperty("no_attempts_message"));
+            redirectAttributes.addFlashAttribute("message", GameMessage.NO_ATTEMPTS_MESSAGE);
             redirectAttributes.addFlashAttribute("game", game);
             recordService.saveRecord(new Record(game, LocalDateTime.now(), "error"));
             return "redirect:/result/" + id;
         }
 
     }
-
-
     @GetMapping("/result/{id}")
     public String result(@ModelAttribute("game") Game game, Model model) {
         Boolean playerHasMultipleGames = gameService.isPlayerHasMultipleGames(game.getPlayer());

@@ -1,5 +1,6 @@
 package com.example.game.model;
 
+import com.example.game.constants.GameMessage;
 import com.example.game.exception.AttemptsEndedException;
 import com.example.game.exception.TImeOutException;
 import lombok.Data;
@@ -94,19 +95,19 @@ public class Game {
             }
         }
         isGameEnded(bulls);
-        return String.format("%dBulls%dCows", bulls, cow);
+        return String.format(GameMessage.GAME_STATUS_MESSAGE, bulls, cow);
     }
 
     public String getCalculatedTime() {
         if(endTime==null) {
-            return "The time was not calculated because the game is not completed";
+            return GameMessage.TIME_NOT_CALCULATED_MESSAGE;
         }
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
         long seconds = ChronoUnit.SECONDS.between(startTime, endTime);
         if (minutes < 1) {
-            return String.format("Total time: %d second(s)",seconds);
+            return String.format(GameMessage.TIME_IN_SECONDS_MESSAGE,seconds);
         }
-        return String.format("Total time: %d minute(s) and %d  second(s)" , minutes, (seconds - minutes * 60));
+        return String.format(GameMessage.TIME_IN_MINUTES_AND_SECONDS_MESSAGE , minutes, (seconds - minutes * 60));
     }
 
     private String getSequence() {
@@ -120,7 +121,7 @@ public class Game {
                 ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime.plusSeconds(timeSeconds)) < 0) {
             this.endTime = LocalDateTime.now();
             this.gameStatus = GameStatus.LOST;
-            throw new TImeOutException("Time is over");
+            throw new TImeOutException(GameMessage.TIME_IS_OVER_MESSAGE);
         }
     }
 
@@ -128,7 +129,7 @@ public class Game {
         if (mode.equals(GameMode.ATTEMPT_LIMITED) && attemptCount < 0) {
             this.endTime = LocalDateTime.now();
             this.gameStatus = GameStatus.LOST;
-            throw new AttemptsEndedException("The counts of attempts has ended");
+            throw new AttemptsEndedException(GameMessage.ATTEMPTS_IS_ENDED_MESSAGE);
         }
     }
 

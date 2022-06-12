@@ -17,6 +17,8 @@ import java.util.Properties;
 @AllArgsConstructor
 public class GameService {
 
+    private final String GAME_SETTINGS_PROPERTIES = "game-settings.properties";
+
     private final GameRepository gameRepository;
 
     public void saveGame(Game game) {
@@ -39,8 +41,8 @@ public class GameService {
         return gameRepository.findGameByPlayer(player);
     }
 
-    public Game createGameFromPropertiesFile(String resourceName,Player player) throws IOException {
-        Properties props = PropertiesLoaderUtils.loadAllProperties(resourceName);
+    public Game createGameFromPropertiesFile(Player player) throws IOException {
+        Properties props = PropertiesLoaderUtils.loadAllProperties(GAME_SETTINGS_PROPERTIES);
         GameMode gameMode = GameMode.valueOf(props.getProperty("mode"));
         int attempts = Integer.parseInt(props.getProperty("attempts"));
         int time = Integer.parseInt(props.getProperty("time"));
