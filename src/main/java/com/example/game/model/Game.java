@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @Entity
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class Game {
 
     private final String SYMBOLS = "0123456789";

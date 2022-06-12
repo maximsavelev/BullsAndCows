@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 
 public class Record {
     @Id

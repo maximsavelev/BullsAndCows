@@ -10,8 +10,6 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-@ToString
-@EqualsAndHashCode
 public class Player {
 
     @Id
