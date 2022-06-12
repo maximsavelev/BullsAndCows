@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Repository
-public interface GameRepository extends CrudRepository<Game,Long> {
+public interface GameRepository extends CrudRepository<Game, Long> {
     int countByPlayer(Player player);
 
     List<Game> findGameByPlayer(Player player);

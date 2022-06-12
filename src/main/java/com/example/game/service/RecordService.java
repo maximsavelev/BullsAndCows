@@ -11,13 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class RecordService {
-
     private final RecordRepository recordRepository;
 
     public void saveRecord(Record record) {
         recordRepository.save(record);
     }
-
 
     public List<Record> findRecordsByGame(Game game) {
         return recordRepository.findRecordsByGame(game);

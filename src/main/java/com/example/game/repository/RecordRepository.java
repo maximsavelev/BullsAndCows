@@ -9,7 +9,5 @@ import java.util.List;
 
 @Repository
 public interface RecordRepository extends CrudRepository<Record,Long> {
-
    List<Record> findRecordsByGame(Game game);
-
 }

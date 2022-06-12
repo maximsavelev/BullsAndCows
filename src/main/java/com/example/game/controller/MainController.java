@@ -3,12 +3,12 @@ package com.example.game.controller;
 import com.example.game.exception.AttemptsEndedException;
 import com.example.game.exception.EntityNotFound;
 import com.example.game.exception.TImeOutException;
+import com.example.game.model.Record;
 import com.example.game.model.*;
 import com.example.game.service.GameService;
 import com.example.game.service.PlayerService;
 import com.example.game.service.RecordService;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.util.buf.Utf8Decoder;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,13 +33,16 @@ public class MainController {
     private final PlayerService playerService;
 
 
+    private final String GAME_SETTINGS_PROPERTIES = "game-settings.properties";
+    private final String MESSAGE_PROPERTIES = "message.properties";
+
+
     @GetMapping("/start")
     public String startGame(Model model) {
         model.addAttribute("player", new Player());
         return "start";
 
     }
-
 
     @PostMapping("/start")
     public String startGame(@ModelAttribute("player") Player player,
@@ -50,11 +53,7 @@ public class MainController {
         } else {
             playerService.savePlayer(player);
         }
-        Properties props = PropertiesLoaderUtils.loadAllProperties("game-settings.properties");
-        GameMode gameMode = GameMode.valueOf(props.getProperty("mode"));
-        int attempts = Integer.parseInt(props.getProperty("attempts"));
-        int time = Integer.parseInt(props.getProperty("time"));
-        Game game = new Game(gameMode, player, time, attempts);
+        Game game = gameService.createGameFromPropertiesFile(GAME_SETTINGS_PROPERTIES, player);
         gameService.saveGame(game);
         redirectAttributes.addFlashAttribute("wrapper", new Wrapper());
         return "redirect:/game/" + game.getId();
@@ -71,7 +70,7 @@ public class MainController {
     @PostMapping("/game/{id}")
     public String game(@ModelAttribute("wrapper") Wrapper wrapper, Model model,
                        RedirectAttributes redirectAttributes, @PathVariable Long id) throws Exception {
-        Properties props = PropertiesLoaderUtils.loadAllProperties("message.properties");
+        Properties props = PropertiesLoaderUtils.loadAllProperties(MESSAGE_PROPERTIES);
         Game game = gameService.findGameById(id);
         String guess;
         try {
@@ -83,6 +82,9 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("game", game);
                 return "redirect:/result/" + id;
             }
+            model.addAttribute("wrapper", wrapper);
+            return "game";
+
         } catch (TImeOutException e) {
             redirectAttributes.addFlashAttribute("message", props.getProperty("no_time_message"));
             redirectAttributes.addFlashAttribute("game", game);
@@ -95,8 +97,7 @@ public class MainController {
             recordService.saveRecord(new Record(game, LocalDateTime.now(), "error"));
             return "redirect:/result/" + id;
         }
-        model.addAttribute("wrapper", wrapper);
-        return "game";
+
     }
 
 

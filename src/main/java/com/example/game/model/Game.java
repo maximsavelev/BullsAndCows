@@ -4,6 +4,7 @@ import com.example.game.exception.AttemptsEndedException;
 import com.example.game.exception.TImeOutException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class Game {
@@ -71,9 +73,7 @@ public class Game {
         startTime = LocalDateTime.now();
     }
 
-    public Game() {
 
-    }
 
     public String makeGuess(String guess) throws Exception {
         attemptCount--;

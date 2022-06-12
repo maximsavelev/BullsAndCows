@@ -24,5 +24,4 @@ public class PlayerService {
         return playerRepository.existsPlayerByUsername(username);
     }
 
-
 }
