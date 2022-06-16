@@ -1,8 +1,9 @@
 package com.example.game.model;
 
-import com.example.game.constants.GameMessage;
+import com.example.game.constants.GameConstants;
+import com.example.game.constants.MessageConstants;
 import com.example.game.exception.AttemptsEndedException;
-import com.example.game.exception.TImeOutException;
+import com.example.game.exception.TimeOutException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class Game {
 
-    private final String SYMBOLS = "0123456789";
-    private final int COUNT_OF_SYMBOLS = 4;
+    @Transient
+    private final String SYMBOLS = GameConstants.SYMBOLS;
+    @Transient
+    private final int COUNT_OF_SYMBOLS = GameConstants.COUNT_OF_SYMBOLS;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,8 +76,6 @@ public class Game {
 
     }
 
-
-
     public String makeGuess(String guess) throws Exception {
         attemptCount--;
         isAttemptsEnded();
@@ -94,19 +95,18 @@ public class Game {
             }
         }
         isGameEnded(bulls);
-        return String.format(GameMessage.GAME_STATUS_MESSAGE, bulls, cow);
+        return String.format(MessageConstants.GAME_STATUS_MESSAGE, bulls, cow);
     }
-
     public String getCalculatedTime() {
         if(endTime==null) {
-            return GameMessage.TIME_NOT_CALCULATED_MESSAGE;
+            return MessageConstants.TIME_NOT_CALCULATED_MESSAGE;
         }
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
         long seconds = ChronoUnit.SECONDS.between(startTime, endTime);
         if (minutes < 1) {
-            return String.format(GameMessage.TIME_IN_SECONDS_MESSAGE,seconds);
+            return String.format(MessageConstants.TIME_IN_SECONDS_MESSAGE,seconds);
         }
-        return String.format(GameMessage.TIME_IN_MINUTES_AND_SECONDS_MESSAGE , minutes, (seconds - minutes * 60));
+        return String.format(MessageConstants.TIME_IN_MINUTES_AND_SECONDS_MESSAGE , minutes, (seconds - minutes * 60));
     }
 
     private String getSequence() {
@@ -115,12 +115,12 @@ public class Game {
         return chars.stream().map(Object::toString).limit(COUNT_OF_SYMBOLS).collect(Collectors.joining());
     }
 
-    private void isTimeOut() throws TImeOutException {
+    private void isTimeOut() throws TimeOutException {
         if (mode.equals(GameMode.TIME_LIMITED) &&
                 ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime.plusSeconds(timeSeconds)) < 0) {
             this.endTime = LocalDateTime.now();
             this.gameStatus = GameStatus.LOST;
-            throw new TImeOutException(GameMessage.TIME_IS_OVER_MESSAGE);
+            throw new TimeOutException(MessageConstants.NO_TIME_MESSAGE);
         }
     }
 
@@ -128,7 +128,7 @@ public class Game {
         if (mode.equals(GameMode.ATTEMPT_LIMITED) && attemptCount < 0) {
             this.endTime = LocalDateTime.now();
             this.gameStatus = GameStatus.LOST;
-            throw new AttemptsEndedException(GameMessage.ATTEMPTS_IS_ENDED_MESSAGE);
+            throw new AttemptsEndedException(MessageConstants.NO_ATTEMPTS_MESSAGE);
         }
     }
 

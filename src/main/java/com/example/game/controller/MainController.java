@@ -1,16 +1,15 @@
 package com.example.game.controller;
 
-import com.example.game.constants.GameMessage;
+import com.example.game.constants.MessageConstants;
 import com.example.game.exception.AttemptsEndedException;
 import com.example.game.exception.EntityNotFound;
-import com.example.game.exception.TImeOutException;
+import com.example.game.exception.TimeOutException;
 import com.example.game.model.Record;
 import com.example.game.model.*;
 import com.example.game.service.GameService;
 import com.example.game.service.PlayerService;
 import com.example.game.service.RecordService;
 import lombok.AllArgsConstructor;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Properties;
 
 @Controller
 @AllArgsConstructor
@@ -33,16 +31,12 @@ public class MainController {
 
     private final PlayerService playerService;
 
-
-
-
     @GetMapping("/start")
     public String startGame(Model model) {
         model.addAttribute("player", new Player());
         return "start";
 
     }
-
     @PostMapping("/start")
     public String startGame(@ModelAttribute("player") Player player,
                             RedirectAttributes redirectAttributes) throws IOException {
@@ -76,24 +70,19 @@ public class MainController {
             wrapper.setAnswer(guess);
             recordService.saveRecord(new Record(game, LocalDateTime.now(), wrapper.getGuest()));
             if (game.getGameStatus().equals(GameStatus.WON)) {
-                redirectAttributes.addFlashAttribute("message", GameMessage.WIN_MESSAGE);
+                redirectAttributes.addFlashAttribute("message", MessageConstants.WIN_MESSAGE);
                 redirectAttributes.addFlashAttribute("game", game);
                 return "redirect:/result/" + id;
             }
             model.addAttribute("wrapper", wrapper);
             return "game";
 
-        } catch (TImeOutException e) {
-            redirectAttributes.addFlashAttribute("message", GameMessage.NO_TIME_MESSAGE);
+        } catch (TimeOutException | AttemptsEndedException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
             redirectAttributes.addFlashAttribute("game", game);
-            recordService.saveRecord(new Record(game, LocalDateTime.now(), "error"));
+            recordService.saveRecord(new Record(game, LocalDateTime.now(), e.getMessage()));
             return "redirect:/result/" + id;
 
-        } catch (AttemptsEndedException e) {
-            redirectAttributes.addFlashAttribute("message", GameMessage.NO_ATTEMPTS_MESSAGE);
-            redirectAttributes.addFlashAttribute("game", game);
-            recordService.saveRecord(new Record(game, LocalDateTime.now(), "error"));
-            return "redirect:/result/" + id;
         }
 
     }
