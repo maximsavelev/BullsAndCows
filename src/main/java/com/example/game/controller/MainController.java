@@ -68,6 +68,7 @@ public class MainController {
         try {
             guess = game.makeGuess(wrapper.getGuest().trim());
             wrapper.setAnswer(guess);
+            gameService.saveGame(game);
             recordService.saveRecord(new Record(game, LocalDateTime.now(), wrapper.getGuest()));
             if (game.getGameStatus().equals(GameStatus.WON)) {
                 redirectAttributes.addFlashAttribute("message", MessageConstants.WIN_MESSAGE);
@@ -78,11 +79,11 @@ public class MainController {
             return "game";
 
         } catch (TimeOutException | AttemptsEndedException e) {
+            gameService.saveGame(game);
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             redirectAttributes.addFlashAttribute("game", game);
             recordService.saveRecord(new Record(game, LocalDateTime.now(), e.getMessage()));
             return "redirect:/result/" + id;
-
         }
 
     }

@@ -49,14 +49,13 @@ public class Game {
     private GameMode mode;
 
     private GameStatus gameStatus;
-
     public Game(GameMode mode, Player player, int seconds, int attempts) {
         this.mode = mode;
         this.player = player;
         this.guessedWord = getSequence();
         this.gameStatus = GameStatus.UNFINISHED;
         this.startTime = LocalDateTime.now();
-
+        System.out.println(guessedWord);
         switch (mode) {
             case ATTEMPT_LIMITED: {
                 this.timeSeconds = Integer.MAX_VALUE;
